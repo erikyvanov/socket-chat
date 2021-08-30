@@ -74,6 +74,7 @@ func (us *UserService) Login(user *models.User) (string, error) {
 
 	user.Name = dbUser.Name
 	user.Online = dbUser.Online
+	user.Password = ""
 
 	return jwt, err
 }
