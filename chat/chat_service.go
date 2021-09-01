@@ -1,8 +1,9 @@
-package models
+package chat
 
 import (
 	"sync"
 
+	"github.com/erikyvanov/chat-fh/models"
 	"github.com/gofiber/websocket/v2"
 )
 
@@ -13,7 +14,7 @@ type ChatService struct {
 	users              map[string]*websocket.Conn
 	UpcomingChatClient chan ChatClient
 	DeleteChatClient   chan ChatClient
-	UpcomingMessage    chan ChatMessage
+	UpcomingMessage    chan models.ChatMessage
 }
 
 func (cs *ChatService) Run() {
@@ -43,7 +44,7 @@ func GetChatService() *ChatService {
 			users:              make(map[string]*websocket.Conn),
 			UpcomingChatClient: make(chan ChatClient),
 			DeleteChatClient:   make(chan ChatClient),
-			UpcomingMessage:    make(chan ChatMessage),
+			UpcomingMessage:    make(chan models.ChatMessage),
 		}
 	})
 

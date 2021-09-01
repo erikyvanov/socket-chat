@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/erikyvanov/chat-fh/chat"
 	"github.com/erikyvanov/chat-fh/database"
-	"github.com/erikyvanov/chat-fh/models"
 	"github.com/erikyvanov/chat-fh/routes"
 	"github.com/erikyvanov/chat-fh/utils"
 	"github.com/gofiber/fiber/v2"
@@ -13,7 +13,7 @@ func main() {
 	if database.IsConnectedToMongoDB() {
 		defer database.CloseConnection()
 
-		chatService := models.GetChatService()
+		chatService := chat.GetChatService()
 		go chatService.Run()
 
 		app := fiber.New()

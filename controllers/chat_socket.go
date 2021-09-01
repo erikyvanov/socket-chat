@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/erikyvanov/chat-fh/chat"
 	"github.com/erikyvanov/chat-fh/models"
 	"github.com/erikyvanov/chat-fh/services"
 	"github.com/gofiber/websocket/v2"
@@ -18,8 +19,8 @@ func IntoToChat(c *websocket.Conn) {
 		return
 	}
 
-	chatService := models.GetChatService()
-	chatClient := models.ChatClient{Conn: c, Email: user.Email}
+	chatService := chat.GetChatService()
+	chatClient := chat.ChatClient{Conn: c, Email: user.Email}
 
 	chatService.UpcomingChatClient <- chatClient
 
