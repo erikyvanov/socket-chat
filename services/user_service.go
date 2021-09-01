@@ -22,6 +22,7 @@ var (
 	ErrEmailExists            = errors.New("the user is already registered")
 	ErrUserDontExist          = errors.New("user does not exist")
 	ErrPasswordOrEmailInvalid = errors.New("the email or password is not valid")
+	ErrDatabase               = errors.New("error in database")
 )
 
 func GetUserService() *UserService {
@@ -87,4 +88,22 @@ func (us *UserService) GetUser(email string) (*models.User, error) {
 
 	user.Password = ""
 	return user, nil
+}
+
+func (us *UserService) SetConnectionStatus(email string, status bool) error {
+	err := us.repository.SetUserConectionStatus(email, status)
+	if err != nil {
+		return ErrUserDontExist
+	}
+
+	return nil
+}
+
+func (us *UserService) GetAllUsersExceptUserRequest(userRequestEmail string, page int) ([]*models.User, error) {
+	users, err := us.repository.GetAllUsersExceptUserRequest(userRequestEmail, page)
+	if err != nil {
+		return nil, ErrDatabase
+	}
+
+	return users, nil
 }

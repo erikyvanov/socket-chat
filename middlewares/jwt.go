@@ -11,6 +11,7 @@ import (
 var ErrInvalidToken = errors.New("invalid token")
 
 func ValidateUserJWT(c *fiber.Ctx) error {
+
 	token := string(c.Request().Header.Peek("x-token"))
 	if token == "" {
 		return c.Status(fiber.StatusUnauthorized).JSON(models.Response{

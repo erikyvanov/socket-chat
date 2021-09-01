@@ -37,6 +37,10 @@ func TokenIsValid(receivedToken string) (jwt.MapClaims, error) {
 		return key, nil
 	})
 
+	if err != nil {
+		return nil, err
+	}
+
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		return claims, nil
 	} else {
