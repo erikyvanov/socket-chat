@@ -1,7 +1,12 @@
 package models
 
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
 type ChatMessage struct {
-	EmailSender  string `json:"email_sender"`
-	EmailReciver string `json:"email_reciver"`
-	Message      string `json:"message"`
+	ID           primitive.ObjectID `json:"id" bson:"_id"`
+	SenderEmail  string             `json:"sender_email" bson:"sender_email"`
+	ReciverEmail string             `json:"reciver_email" bson:"reciver_email"`
+	Message      string             `json:"message" bson:"message"`
 }

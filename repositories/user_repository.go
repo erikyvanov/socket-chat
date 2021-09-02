@@ -20,17 +20,17 @@ type UserRepository struct {
 
 const collectionName = "users"
 
-var once sync.Once
-var repository *UserRepository
+var onceUserRepository sync.Once
+var userRepository *UserRepository
 
 func GetUserRepository() *UserRepository {
-	once.Do(func() {
-		repository = &UserRepository{
+	onceUserRepository.Do(func() {
+		userRepository = &UserRepository{
 			collection: database.GetMongoDatabase().Collection(collectionName),
 		}
 	})
 
-	return repository
+	return userRepository
 }
 
 func (ur *UserRepository) Save(user models.User) error {

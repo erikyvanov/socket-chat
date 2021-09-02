@@ -20,6 +20,7 @@ func main() {
 		routes.AuthGroup(app)
 		routes.ChatSocketGroup(app)
 		routes.UsersGroup(app)
+		routes.MessagesGroup(app)
 
 		app.Listen(":3000")
 	}

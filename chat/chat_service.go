@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/erikyvanov/chat-fh/models"
+	"github.com/erikyvanov/chat-fh/repositories"
 	"github.com/gofiber/websocket/v2"
 )
 
@@ -18,19 +19,22 @@ type ChatService struct {
 }
 
 func (cs *ChatService) Run() {
+	messagesRepository := repositories.GetMessageRepository()
+
 	for {
 		select {
 		case upcomingChatClient := <-cs.UpcomingChatClient:
 			cs.users[upcomingChatClient.Email] = upcomingChatClient.Conn
 
 		case upcomingMessage := <-cs.UpcomingMessage:
-			if c, ok := cs.users[upcomingMessage.EmailReciver]; ok {
+			if c, ok := cs.users[upcomingMessage.ReciverEmail]; ok {
 				err := c.WriteJSON(upcomingMessage)
 				if err != nil {
-
-					delete(cs.users, upcomingMessage.EmailReciver)
+					delete(cs.users, upcomingMessage.ReciverEmail)
 				}
 			}
+
+			go messagesRepository.SaveMessage(upcomingMessage)
 
 		case deleteChatClient := <-cs.DeleteChatClient:
 			delete(cs.users, deleteChatClient.Email)
