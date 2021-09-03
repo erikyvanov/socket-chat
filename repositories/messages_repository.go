@@ -2,12 +2,14 @@ package repositories
 
 import (
 	"context"
+	"log"
 	"sync"
 	"time"
 
 	"github.com/erikyvanov/chat-fh/database"
 	"github.com/erikyvanov/chat-fh/models"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -31,12 +33,17 @@ func GetMessageRepository() *MessagesRepository {
 	return messagesRepository
 }
 
-func (mr *MessagesRepository) SaveMessage(message models.ChatMessage) error {
+func (mr *MessagesRepository) SaveMessage(message models.ChatMessage) (primitive.ObjectID, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
-	_, err := mr.collection.InsertOne(ctx, message)
-	return err
+	result, err := mr.collection.InsertOne(ctx, message)
+	if err != nil {
+		log.Println("err", err)
+		return primitive.ObjectID{}, err
+	}
+
+	return result.InsertedID.(primitive.ObjectID), nil
 }
 
 func (mr *MessagesRepository) GetChatMessages(user_email1, user_email2 string, page int) ([]models.ChatMessage, error) {

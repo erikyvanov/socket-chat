@@ -5,6 +5,7 @@ import (
 
 	"github.com/erikyvanov/chat-fh/models"
 	"github.com/erikyvanov/chat-fh/repositories"
+	"github.com/erikyvanov/chat-fh/services"
 	"github.com/gofiber/websocket/v2"
 )
 
@@ -20,6 +21,7 @@ type ChatService struct {
 
 func (cs *ChatService) Run() {
 	messagesRepository := repositories.GetMessageRepository()
+	userService := services.GetUserService()
 
 	for {
 		select {
@@ -27,6 +29,13 @@ func (cs *ChatService) Run() {
 			cs.users[upcomingChatClient.Email] = upcomingChatClient.Conn
 
 		case upcomingMessage := <-cs.UpcomingMessage:
+			newID, err := messagesRepository.SaveMessage(upcomingMessage)
+			if err != nil {
+				return
+			}
+
+			upcomingMessage.ID = newID
+
 			if c, ok := cs.users[upcomingMessage.ReciverEmail]; ok {
 				err := c.WriteJSON(upcomingMessage)
 				if err != nil {
@@ -34,10 +43,9 @@ func (cs *ChatService) Run() {
 				}
 			}
 
-			go messagesRepository.SaveMessage(upcomingMessage)
-
 		case deleteChatClient := <-cs.DeleteChatClient:
 			delete(cs.users, deleteChatClient.Email)
+			go userService.SetConnectionStatus(deleteChatClient.Email, true)
 		}
 	}
 }

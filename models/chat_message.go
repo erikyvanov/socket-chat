@@ -5,7 +5,7 @@ import (
 )
 
 type ChatMessage struct {
-	ID           primitive.ObjectID `json:"id" bson:"_id"`
+	ID           primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	SenderEmail  string             `json:"sender_email" bson:"sender_email"`
 	ReciverEmail string             `json:"reciver_email" bson:"reciver_email"`
 	Message      string             `json:"message" bson:"message"`
